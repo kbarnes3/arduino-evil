@@ -1,7 +1,5 @@
 // Listing. Project 3.
-int ledPin = 12;
-
-char* letters[] = {
+const char* letters[] = {
     ".-", // A
     "-...", // B
     "-.-.", // C
@@ -30,7 +28,7 @@ char* letters[] = {
     "--..", // Z
 };
 
-char* numbers[] = {
+const char* numbers[] = {
     "-----", // 0
     ".----", // 1
     "..---", // 2
@@ -43,7 +41,9 @@ char* numbers[] = {
     "----.", // 9
 };
 
-int dotDelay = 200;
+const int ledPin = 12;
+const int dotDelay = 200;
+bool fReading = false;
 
 void setup()
 {
@@ -53,9 +53,10 @@ void setup()
 
 void loop()
 {
-    char ch;
+    char ch = '\0';
     if (Serial.available())      // is there anything to be read from USB?
     {
+        fReading = true;
         ch = Serial.read();        // read a single letter
         if (ch >= 'a' && ch <= 'z')
         {
@@ -73,10 +74,16 @@ void loop()
         {
             delay(dotDelay * 4);      // gap between words  
         }
+        Serial.print(ch);
+    }
+    else if (fReading)
+    {
+        fReading = false;
+        Serial.println("");
     }
 }
 
-void flashSequence(char* sequence)
+void flashSequence(const char* sequence)
 {
     int i = 0;
     while (sequence[i] != NULL)

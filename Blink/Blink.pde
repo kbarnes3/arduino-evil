@@ -5,12 +5,12 @@
   This example code is in the public domain.
  */
 
-int ledPin = 12;
+int ledPin = 11;
 
-void setup() {                
+void setup() {
   // initialize the digital pin as an output.
   // Pin ledPin has an LED connected on most Arduino boards:
-  pinMode(ledPin, OUTPUT);     
+  pinMode(ledPin, OUTPUT);
 }
 
 void loop() {

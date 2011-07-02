@@ -5,18 +5,35 @@
  * on whether the correct security code was input
  */
 
-int ledPin = 11;
+#include <Keypad.h>
 
-void setup() {
-  // initialize the digital pin as an output.
-  // Pin ledPin has an LED connected on most Arduino boards:
-  pinMode(ledPin, OUTPUT);
+const byte c_cRows = 4; //four rows
+const byte c_cCols = 3; //three columns
+const char c_rgKeys[c_cRows][c_cCols] = {
+    {'1','2','3'},
+    {'4','5','6'},
+    {'7','8','9'},
+    {'#','0','*'},
+};
+byte rgRowPins[c_cRows] = {9, 2, 3, 6}; //connect to the row pinouts of the keypad
+byte rgColPins[c_cCols] = {8, 11, 5}; //connect to the column pinouts of the keypad
+Keypad keypad = Keypad( makeKeymap(c_rgKeys), rgRowPins, rgColPins, c_cRows, c_cCols );
+
+
+void setup()
+{
+    Serial.begin(9600);
 }
 
-void loop() {
-  digitalWrite(ledPin, HIGH);   // set the LED on
-  delay(200);              // wait for a second
-  digitalWrite(ledPin, LOW);    // set the LED off
-  delay(200);              // wait for a second
+void loop()
+{
+    char key = NO_KEY;
+
+    key = keypad.getKey();
+
+    if (key != NO_KEY)
+    {
+        Serial.println(key);
+    }
 }
 

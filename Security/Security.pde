@@ -20,10 +20,18 @@ byte rgColPins[c_cCols] = {3, 1, 5}; //connect to the column pinouts of the keyp
 Keypad keypad = Keypad( makeKeymap(c_rgKeys), rgRowPins, rgColPins, c_cRows, c_cCols );
 
 const byte c_pinRed = 11;
+const byte c_pinGreen = 12;
+
+const char c_szPassword[] = "1337";
+byte iPassword = 0;
+const byte cchPassword = (sizeof(c_szPassword)/sizeof(c_szPassword[0])) - 1;
 
 void setup()
 {
     pinMode(c_pinRed, OUTPUT);
+    pinMode(c_pinGreen, OUTPUT);
+
+    lock();
 }
 
 void loop()
@@ -33,14 +41,38 @@ void loop()
     key = keypad.getKey();
     if (key != NO_KEY)
     {
-        if (key == '5')
+        if ((key == '*') || (key == '#') || (iPassword == cchPassword))
         {
-            digitalWrite(c_pinRed, HIGH);
+            iPassword = 0;
+            lock();
         }
-        else
+        else // Key is numeric and the device is locked
         {
-            digitalWrite(c_pinRed, LOW);
+            if (key == c_szPassword[iPassword])
+            {
+                iPassword++;
+                if (iPassword == cchPassword)
+                {
+                    unlock();
+                }
+            }
+            else
+            {
+                iPassword = 0;
+                lock();
+            }
         }
     }
 }
 
+void lock()
+{
+    digitalWrite(c_pinGreen, LOW);
+    digitalWrite(c_pinRed, HIGH);
+}
+
+void unlock()
+{
+    digitalWrite(c_pinRed, LOW);
+    digitalWrite(c_pinGreen, HIGH);
+}
